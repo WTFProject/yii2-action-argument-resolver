@@ -1,0 +1,34 @@
+{
+    "name": "wtfproject/yii2-action-argument-resolver",
+    "type": "yii2-extension",
+    "version": "0.0.1",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alex.dev",
+            "email": "alex.dev@example.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "wtfproject\\yii\\argumentresolver\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "wtfproject\\yii\\argumentresolver\\tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.0",
+        "yiisoft/yii2": "~2.0.0",
+        "ocramius/proxy-manager": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6"
+    },
+    "extra": {
+        "bootstrap": "wtfproject\\yii\\argumentresolver\\Bootstrap"
+    }
+}
