@@ -6,13 +6,19 @@ namespace wtfproject\yii\argumentresolver\config;
 
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
+use yii\base\Module;
 
 /**
- * Class ComponentArgumentValueResolverConfiguration
+ * Class ComponentConfiguration
  * @package wtfproject\yii\argumentresolver\config
  */
-class ComponentArgumentValueResolverConfiguration extends BaseObject implements ArgumentValueResolverConfigurationInterface
+class ComponentConfiguration extends BaseObject implements ArgumentValueResolverConfigurationInterface
 {
+    /**
+     * @var \yii\base\Module|null
+     */
+    public $currentModule;
+
     /**
      * @var string
      */
@@ -32,6 +38,12 @@ class ComponentArgumentValueResolverConfiguration extends BaseObject implements 
     public function __construct(array $config = [])
     {
         parent::__construct($config);
+
+        if (null !== $this->currentModule && false === $this->currentModule instanceof Module) {
+            throw new InvalidConfigException(
+                'Parameter "currentModule" must be an instance of "\yii\base\Module".'
+            );
+        }
 
         if (null !== $this->module && false === \is_string($this->module)) {
             throw new InvalidConfigException('Parameter "module" can be string or null.');

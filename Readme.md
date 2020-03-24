@@ -3,18 +3,14 @@
 
 3. add resolvers
 3.1 request argument resolver(default yii implementation) (+)
-3.2 active record resolver(find callback, find argument, error handler)
-3.3 module component resolver(?moduleName, component name)
+3.2 active record resolver(find callback, find argument, error handler callback)
+3.3 module component resolver(?moduleName, component name)+
 3.4 container resolver(????)
-
 
 4. add test tool and tests
 5. write documentation 
 
-6. select version or support type of proxy manager generator(not compatible by dependencies)
-   zend-framework/code|laminas/code
-
-7. describe the way, how directory for proxies must be created
+6. describe the way, how directory for proxies must be created
 
 later
 1. console arguments resovler

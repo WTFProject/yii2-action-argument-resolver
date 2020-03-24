@@ -30,11 +30,4 @@ class RequestArgumentValueResolver implements ArgumentValueResolverInterface
     {
         return $requestParams[$parameter->getName()];
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConfigurationClass()
-    {
-    }
 }

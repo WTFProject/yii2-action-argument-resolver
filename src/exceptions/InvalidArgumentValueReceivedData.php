@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace wtfproject\yii\argumentresolver\exceptions;
 
+use LogicException;
 use Throwable;
 
 /**
  * Class InvalidArgumentValueReceivedData
  * @package wtfproject\yii\argumentresolver\exceptions
  */
-final class InvalidArgumentValueReceivedData extends \LogicException
+final class InvalidArgumentValueReceivedData extends LogicException
 {
     /**
      * @var string

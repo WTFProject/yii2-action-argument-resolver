@@ -6,10 +6,9 @@ namespace wtfproject\yii\argumentresolver\resolvers;
 
 use ReflectionMethod;
 use ReflectionParameter;
-use wtfproject\yii\argumentresolver\exceptions\ArgumentConfigurationMissingException;
 use wtfproject\yii\argumentresolver\exceptions\ArgumentsMissingException;
 use wtfproject\yii\argumentresolver\exceptions\InvalidArgumentValueReceivedData;
-use wtfproject\yii\argumentresolver\resolvers\value\ArgumentValueResolverInterface;
+use wtfproject\yii\argumentresolver\exceptions\UnresolvedClassPropertyException;
 use wtfproject\yii\argumentresolver\resolvers\value\ArrayArgumentValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\ComponentArgumentValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\DefaultArgumentValueResolver;
@@ -56,18 +55,22 @@ final class ArgumentResolver implements ArgumentResolverInterface
         $arguments = $missing = [];
 
         foreach ($actionMethod->getParameters() as $parameter) {
-            foreach ($this->getResolvers() as $resolver) {
-                $resolverConfiguration = $this->getResolverConfiguration($resolver, $parameter, $configuration);
+            $parameterConfiguration = $this->getParameterConfiguration($parameter, $configuration);
 
-                if (false === $resolver->supports($parameter, $requestParams, $resolverConfiguration)) {
+            foreach ($this->getResolvers() as $resolver) {
+                if (false === $resolver->supports($parameter, $requestParams, $parameterConfiguration)) {
                     continue;
                 }
 
                 $arguments[$parameter->getName()] = $resolver->resolve(
-                    $parameter, $requestParams, $resolverConfiguration
+                    $parameter, $requestParams, $parameterConfiguration
                 );
 
-                continue(2);
+                continue 2;
+            }
+
+            if (null !== $parameter->getClass()) {
+                throw new UnresolvedClassPropertyException();
             }
 
             if (\array_key_exists($parameter->getName(), $requestParams)) {
@@ -101,7 +104,6 @@ final class ArgumentResolver implements ArgumentResolverInterface
     }
 
     /**
-     * @param \wtfproject\yii\argumentresolver\resolvers\value\ArgumentValueResolverInterface $resolver
      * @param \ReflectionParameter $parameter
      * @param array &$configuration
      *
@@ -109,23 +111,12 @@ final class ArgumentResolver implements ArgumentResolverInterface
      *
      * @throws \yii\base\InvalidConfigException
      */
-    private function getResolverConfiguration(
-        ArgumentValueResolverInterface $resolver, ReflectionParameter $parameter, array &$configuration = []
-    ) {
-        $configurationClass = $resolver->getConfigurationClass();
-
-        if (null === $configurationClass) {
+    private function getParameterConfiguration(ReflectionParameter $parameter, array &$configuration = [])
+    {
+        if (false === \array_key_exists($parameter->getName(), $configuration)) {
             return null;
         }
 
-        if (false === \array_key_exists($parameter->getName(), $configuration)) {
-            throw new ArgumentConfigurationMissingException(
-                \sprintf('Configuration for argument "%s" is missing.', $parameter->getName())
-            );
-        }
-
-        return Yii::createObject(\array_merge($configuration[$parameter->getName()], [
-            'class' => $configurationClass,
-        ]));
+        return Yii::createObject($configuration[$parameter->getName()]);
     }
 }

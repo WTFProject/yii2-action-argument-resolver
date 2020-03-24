@@ -36,11 +36,4 @@ class DefaultArgumentValueResolver implements ArgumentValueResolverInterface
     {
         return $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConfigurationClass()
-    {
-    }
 }

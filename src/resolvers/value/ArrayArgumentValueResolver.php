@@ -32,11 +32,4 @@ class ArrayArgumentValueResolver implements ArgumentValueResolverInterface
     ): array {
         return (array)$requestParams[$parameter->getName()];
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConfigurationClass()
-    {
-    }
 }

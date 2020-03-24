@@ -6,8 +6,11 @@ namespace wtfproject\yii\argumentresolver\resolvers\value;
 
 use ReflectionParameter;
 use wtfproject\yii\argumentresolver\config\ArgumentValueResolverConfigurationInterface as Configuration;
-use wtfproject\yii\argumentresolver\config\ComponentArgumentValueResolverConfiguration;
+use wtfproject\yii\argumentresolver\config\ComponentConfiguration;
 use Yii;
+use yii\base\Application;
+use yii\base\InvalidConfigException;
+use yii\di\Instance;
 
 /**
  * Class ComponentArgumentValueResolver
@@ -16,20 +19,20 @@ use Yii;
 class ComponentArgumentValueResolver implements ArgumentValueResolverInterface
 {
     /**
-     *{ @inheritDoc}
+     * {@inheritDoc}
      */
     public function supports(
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
     ): bool {
         return false === $parameter->isOptional()
             && null !== $parameter->getClass()
-            && $configuration instanceof ComponentArgumentValueResolverConfiguration;
+            && $configuration instanceof ComponentConfiguration;
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param \wtfproject\yii\argumentresolver\config\ComponentArgumentValueResolverConfiguration $configuration
+     * @param \wtfproject\yii\argumentresolver\config\ComponentConfiguration $configuration
      *
      * @return object
      *
@@ -37,31 +40,21 @@ class ComponentArgumentValueResolver implements ArgumentValueResolverInterface
      */
     public function resolve(ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null)
     {
-        $module = Yii::$app;
+        $module = $configuration->currentModule ?? Yii::$app;
 
         if (false === empty($configuration->module)) {
-            $moduleIds = \explode('.', $configuration->module);
+            $currentModule = $module;
+            $module = $currentModule->getModule($configuration->module);
 
-            foreach ($moduleIds as $moduleId) {
-                $module = $module->getModule($moduleId);
+            if (null === $module) {
+                throw new InvalidConfigException(\sprintf(
+                    'Can not retrieve module "%s" from "%s".',
+                    $configuration->module,
+                    $currentModule instanceof Application ? 'application' : ($currentModule->getUniqueId() . ' module')
+                ));
             }
         }
 
-        $component = $module->get($configuration->component);
-
-        if (false === $parameter->getClass()->isInstance($component)) {
-            throw new \RuntimeException();
-            //TODO: throw exception
-        }
-
-        return $component;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConfigurationClass()
-    {
-        return ComponentArgumentValueResolverConfiguration::class;
+        return Instance::ensure($configuration->component, $parameter->getClass()->getName(), $module);
     }
 }

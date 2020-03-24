@@ -32,9 +32,4 @@ interface ArgumentValueResolverInterface
      * @return mixed
      */
     public function resolve(ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null);
-
-    /**
-     * @return string|null
-     */
-    public function getConfigurationClass();
 }

@@ -57,13 +57,6 @@ class TypedArgumentValueResolver implements ArgumentValueResolverInterface
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function getConfigurationClass()
-    {
-    }
-
-    /**
      * @param \ReflectionType $type
      *
      * @return string

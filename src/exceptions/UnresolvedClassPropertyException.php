@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace wtfproject\yii\argumentresolver\exceptions;
 
+use LogicException;
+
 /**
- * Class ArgumentConfigurationMissingException
+ * Class UnresolvedClassPropertyException
  * @package wtfproject\yii\argumentresolver\exceptions
  */
-final class ArgumentConfigurationMissingException extends \LogicException
+final class UnresolvedClassPropertyException extends LogicException
 {
 
 }
