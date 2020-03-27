@@ -20,11 +20,7 @@ class DefaultArgumentValueResolver implements ArgumentValueResolverInterface
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
     ): bool {
         return false === \array_key_exists($parameter->getName(), $requestParams)
-            && false === $parameter->isVariadic()
-            && (
-                $parameter->isDefaultValueAvailable()
-                || (null !== ($type = $parameter->getType()) && $type->allowsNull())
-            );
+            && $parameter->isDefaultValueAvailable();
     }
 
     /**
@@ -34,6 +30,6 @@ class DefaultArgumentValueResolver implements ArgumentValueResolverInterface
      */
     public function resolve(ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null)
     {
-        return $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null;
+        return $parameter->getDefaultValue();
     }
 }

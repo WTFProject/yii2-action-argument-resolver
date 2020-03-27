@@ -24,9 +24,7 @@ class ComponentArgumentValueResolver implements ArgumentValueResolverInterface
     public function supports(
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
     ): bool {
-        return false === $parameter->isOptional()
-            && null !== $parameter->getClass()
-            && $configuration instanceof ComponentConfiguration;
+        return $configuration instanceof ComponentConfiguration && null !== $parameter->getClass();
     }
 
     /**
@@ -53,6 +51,10 @@ class ComponentArgumentValueResolver implements ArgumentValueResolverInterface
                     $currentModule instanceof Application ? 'application' : ($currentModule->getUniqueId() . ' module')
                 ));
             }
+        }
+
+        if (false === $module->has($configuration->component) && false === $parameter->allowsNull()) {
+            //TODO: throw exception
         }
 
         return Instance::ensure($configuration->component, $parameter->getClass()->getName(), $module);

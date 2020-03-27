@@ -19,9 +19,7 @@ class ArrayArgumentValueResolver implements ArgumentValueResolverInterface
     public function supports(
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
     ): bool {
-        return \array_key_exists($parameter->getName(), $requestParams)
-            && $parameter->isArray()
-            && false === $parameter->isVariadic();
+        return \array_key_exists($parameter->getName(), $requestParams) && $parameter->isArray();
     }
 
     /**

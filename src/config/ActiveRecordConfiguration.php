@@ -19,11 +19,6 @@ class ActiveRecordConfiguration extends BaseObject implements ArgumentValueResol
     public $attribute;
 
     /**
-     * @var string
-     */
-    public $method;
-
-    /**
      * @var callable|null
      */
     public $findCallback;
@@ -45,10 +40,6 @@ class ActiveRecordConfiguration extends BaseObject implements ArgumentValueResol
 
         if (null !== $this->attribute && (false === \is_string($this->attribute) || '' === $this->attribute)) {
             throw new InvalidConfigException('Parameter "attribute" must be not empty string or null.');
-        }
-
-        if (null !== $this->method && (false === \is_string($this->method) || '' === $this->method)) {
-            throw new InvalidConfigException('Parameter "method" must be not empty string or null.');
         }
 
         if (null !== $this->findCallback && false === \is_callable($this->findCallback)) {

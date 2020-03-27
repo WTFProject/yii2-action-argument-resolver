@@ -22,10 +22,9 @@ class TypedArgumentValueResolver implements ArgumentValueResolverInterface
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
     ): bool {
         return \array_key_exists($parameter->getName(), $requestParams)
-            && false === $parameter->isVariadic()
             && null !== ($type = $parameter->getType())
             && $type->isBuiltin()
-            && \in_array($this->getParameterTypeName($type), ['int', 'float']);
+            && (null !== $requestParams[$parameter->getName()] || false === $type->allowsNull());
     }
 
     /**
@@ -37,19 +36,17 @@ class TypedArgumentValueResolver implements ArgumentValueResolverInterface
      */
     public function resolve(ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null)
     {
-        if (null === $requestParams[$parameter->getName()] && false === $parameter->getType()->allowsNull()) {
-            throw new InvalidArgumentValueReceivedData($parameter->getName());
-        }
-
         $typeName = $this->getParameterTypeName($parameter->getType());
 
         if ('float' === $typeName) {
             $value = \filter_var($requestParams[$parameter->getName()], \FILTER_VALIDATE_FLOAT, \FILTER_NULL_ON_FAILURE);
-        } else {
+        } else if ('int' === $typeName) {
             $value = \filter_var($requestParams[$parameter->getName()], \FILTER_VALIDATE_INT, \FILTER_NULL_ON_FAILURE);
+        } else {
+            $value = $requestParams[$parameter->getName()];
         }
 
-        if (null !== $requestParams[$parameter->getName()] && null === $value) {
+        if (null === $value) {
             throw new InvalidArgumentValueReceivedData($parameter->getName());
         }
 

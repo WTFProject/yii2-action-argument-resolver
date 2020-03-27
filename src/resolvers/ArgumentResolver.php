@@ -6,15 +6,18 @@ namespace wtfproject\yii\argumentresolver\resolvers;
 
 use ReflectionMethod;
 use ReflectionParameter;
+use wtfproject\yii\argumentresolver\config\ArgumentValueResolverConfigurationInterface as Configuration;
 use wtfproject\yii\argumentresolver\exceptions\ArgumentsMissingException;
 use wtfproject\yii\argumentresolver\exceptions\InvalidArgumentValueReceivedData;
 use wtfproject\yii\argumentresolver\exceptions\UnresolvedClassPropertyException;
+use wtfproject\yii\argumentresolver\resolvers\value\ActiveRecordArgumentValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\ArrayArgumentValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\ComponentArgumentValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\DefaultArgumentValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\RequestArgumentValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\TypedArgumentValueResolver;
 use Yii;
+use yii\di\Instance;
 
 /**
  * Class ArgumentResolver
@@ -37,10 +40,11 @@ final class ArgumentResolver implements ArgumentResolverInterface
     public function __construct(array $resolvers = null)
     {
         $this->resolvers = $resolvers ?? [
+                ActiveRecordArgumentValueResolver::class,
+                ComponentArgumentValueResolver::class,
                 ArrayArgumentValueResolver::class,
                 TypedArgumentValueResolver::class,
                 RequestArgumentValueResolver::class,
-                ComponentArgumentValueResolver::class,
                 DefaultArgumentValueResolver::class,
             ];
     }
@@ -55,6 +59,11 @@ final class ArgumentResolver implements ArgumentResolverInterface
         $arguments = $missing = [];
 
         foreach ($actionMethod->getParameters() as $parameter) {
+            if ($parameter->isVariadic()) {
+                //TODO: variadic properties is not supported.
+                throw new \RuntimeException();
+            }
+
             $parameterConfiguration = $this->getParameterConfiguration($parameter, $configuration);
 
             foreach ($this->getResolvers() as $resolver) {
@@ -70,6 +79,7 @@ final class ArgumentResolver implements ArgumentResolverInterface
             }
 
             if (null !== $parameter->getClass()) {
+                //TODO: add message
                 throw new UnresolvedClassPropertyException();
             }
 
@@ -117,6 +127,6 @@ final class ArgumentResolver implements ArgumentResolverInterface
             return null;
         }
 
-        return Yii::createObject($configuration[$parameter->getName()]);
+        return Instance::ensure($configuration[$parameter->getName()], Configuration::class);
     }
 }
