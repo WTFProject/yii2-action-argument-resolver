@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace wtfproject\yii\argumentresolver\filters;
 
 use Closure;
-use wtfproject\yii\argumentresolver\HandlesActionParamsBinding;
 use wtfproject\yii\argumentresolver\proxy\factory\ControllerProxyFactory;
 use wtfproject\yii\argumentresolver\resolvers\ArgumentResolverInterface;
 use yii\base\ActionFilter;

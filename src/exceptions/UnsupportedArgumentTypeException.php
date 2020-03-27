@@ -7,10 +7,10 @@ namespace wtfproject\yii\argumentresolver\exceptions;
 use RuntimeException;
 
 /**
- * Class UnresolvedClassPropertyException
+ * Class UnsupportedArgumentTypeException
  * @package wtfproject\yii\argumentresolver\exceptions
  */
-final class UnresolvedClassPropertyException extends RuntimeException
+final class UnsupportedArgumentTypeException extends RuntimeException
 {
 
 }

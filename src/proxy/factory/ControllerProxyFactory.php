@@ -15,7 +15,7 @@ use yii\base\Controller;
  * Class ControllerProxyFactory
  * @package wtfproject\yii\argumentresolver\proxy\factory
  */
-class ControllerProxyFactory extends AbstractBaseFactory
+final class ControllerProxyFactory extends AbstractBaseFactory
 {
     /**
      * @var \wtfproject\yii\argumentresolver\proxy\generators\AccessInterceptorValueHolderGenerator

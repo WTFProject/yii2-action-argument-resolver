@@ -39,7 +39,7 @@ use Zend\Code\Reflection\MethodReflection;
 final class AccessInterceptorValueHolderGenerator extends \ProxyManager\ProxyGenerator\AccessInterceptorValueHolderGenerator
 {
     /**
-     * @var array<int, string>
+     * @var string[]
      */
     private $allowedMethods;
 

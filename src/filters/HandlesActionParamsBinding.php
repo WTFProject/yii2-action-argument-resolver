@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace wtfproject\yii\argumentresolver;
+namespace wtfproject\yii\argumentresolver\filters;
 
 use ReflectionMethod;
 use wtfproject\yii\argumentresolver\exceptions\ArgumentsMissingException;
@@ -14,7 +14,7 @@ use yii\web\BadRequestHttpException;
 
 /**
  * Trait HandlesActionParamsBinding
- * @package wtfproject\yii\argumentresolver
+ * @package wtfproject\yii\argumentresolver\filters
  */
 trait HandlesActionParamsBinding
 {

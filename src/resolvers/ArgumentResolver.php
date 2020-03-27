@@ -10,6 +10,7 @@ use wtfproject\yii\argumentresolver\config\ArgumentValueResolverConfigurationInt
 use wtfproject\yii\argumentresolver\exceptions\ArgumentsMissingException;
 use wtfproject\yii\argumentresolver\exceptions\InvalidArgumentValueReceivedData;
 use wtfproject\yii\argumentresolver\exceptions\UnresolvedClassPropertyException;
+use wtfproject\yii\argumentresolver\exceptions\UnsupportedArgumentTypeException;
 use wtfproject\yii\argumentresolver\resolvers\value\ActiveRecordValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\ArrayValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\ComponentValueResolver;
@@ -62,8 +63,7 @@ final class ArgumentResolver implements ArgumentResolverInterface
 
         foreach ($actionMethod->getParameters() as $parameter) {
             if ($parameter->isVariadic()) {
-                //TODO: variadic properties is not supported.
-                throw new \RuntimeException();
+                throw new UnsupportedArgumentTypeException('Variadic arguments does not supported.');
             }
 
             $parameterConfiguration = $this->getParameterConfiguration($parameter, $configuration);
@@ -81,8 +81,11 @@ final class ArgumentResolver implements ArgumentResolverInterface
             }
 
             if (null !== $parameter->getClass()) {
-                //TODO: add message
-                throw new UnresolvedClassPropertyException();
+                throw new UnresolvedClassPropertyException(\sprintf(
+                    'Unable to resolve argument "%s" with type "%s".',
+                    $parameter->getName(),
+                    $parameter->getClass()->getName()
+                ));
             }
 
             if (\array_key_exists($parameter->getName(), $requestParams)) {

@@ -54,7 +54,11 @@ class ComponentValueResolver implements ArgumentValueResolverInterface
         }
 
         if (false === $module->has($configuration->component) && false === $parameter->allowsNull()) {
-            //TODO: throw exception
+            throw new InvalidConfigException(\sprintf(
+                'Can not retrieve component "%s" from "%s".',
+                $configuration->component,
+                $module instanceof Application ? 'application' : ($module->getUniqueId() . ' module')
+            ));
         }
 
         return Instance::ensure($configuration->component, $parameter->getClass()->getName(), $module);
