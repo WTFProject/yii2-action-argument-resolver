@@ -13,10 +13,10 @@ use yii\base\InvalidConfigException;
 use yii\di\Instance;
 
 /**
- * Class ComponentArgumentValueResolver
+ * Class ComponentValueResolver
  * @package wtfproject\yii\argumentresolver\resolvers\value
  */
-class ComponentArgumentValueResolver implements ArgumentValueResolverInterface
+class ComponentValueResolver implements ArgumentValueResolverInterface
 {
     /**
      * {@inheritDoc}

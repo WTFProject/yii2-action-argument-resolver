@@ -8,10 +8,10 @@ use ReflectionParameter;
 use wtfproject\yii\argumentresolver\config\ArgumentValueResolverConfigurationInterface as Configuration;
 
 /**
- * Class RequestArgumentValueResolver
+ * Class RequestAttributeValueResolver
  * @package wtfproject\yii\argumentresolver\resolvers\value
  */
-class RequestArgumentValueResolver implements ArgumentValueResolverInterface
+class RequestAttributeValueResolver implements ArgumentValueResolverInterface
 {
     /**
      * {@inheritDoc}

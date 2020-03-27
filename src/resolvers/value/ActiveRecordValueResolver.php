@@ -13,10 +13,10 @@ use yii\db\ActiveRecordInterface;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class ActiveRecordArgumentValueResolver
+ * Class ActiveRecordValueResolver
  * @package wtfproject\yii\argumentresolver\resolvers\value
  */
-class ActiveRecordArgumentValueResolver implements ArgumentValueResolverInterface
+class ActiveRecordValueResolver implements ArgumentValueResolverInterface
 {
     /**
      * {@inheritDoc}

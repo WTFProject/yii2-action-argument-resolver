@@ -10,10 +10,10 @@ use wtfproject\yii\argumentresolver\config\ArgumentValueResolverConfigurationInt
 use wtfproject\yii\argumentresolver\exceptions\InvalidArgumentValueReceivedData;
 
 /**
- * Class TypedArgumentValueResolver
+ * Class TypedRequestAttributeValueResolver
  * @package wtfproject\yii\argumentresolver\resolvers\value
  */
-class TypedArgumentValueResolver implements ArgumentValueResolverInterface
+class TypedRequestAttributeValueResolver implements ArgumentValueResolverInterface
 {
     /**
      * {@inheritDoc}

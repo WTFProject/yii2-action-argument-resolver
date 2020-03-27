@@ -10,12 +10,13 @@ use wtfproject\yii\argumentresolver\config\ArgumentValueResolverConfigurationInt
 use wtfproject\yii\argumentresolver\exceptions\ArgumentsMissingException;
 use wtfproject\yii\argumentresolver\exceptions\InvalidArgumentValueReceivedData;
 use wtfproject\yii\argumentresolver\exceptions\UnresolvedClassPropertyException;
-use wtfproject\yii\argumentresolver\resolvers\value\ActiveRecordArgumentValueResolver;
-use wtfproject\yii\argumentresolver\resolvers\value\ArrayArgumentValueResolver;
-use wtfproject\yii\argumentresolver\resolvers\value\ComponentArgumentValueResolver;
-use wtfproject\yii\argumentresolver\resolvers\value\DefaultArgumentValueResolver;
-use wtfproject\yii\argumentresolver\resolvers\value\RequestArgumentValueResolver;
-use wtfproject\yii\argumentresolver\resolvers\value\TypedArgumentValueResolver;
+use wtfproject\yii\argumentresolver\resolvers\value\ActiveRecordValueResolver;
+use wtfproject\yii\argumentresolver\resolvers\value\ArrayValueResolver;
+use wtfproject\yii\argumentresolver\resolvers\value\ComponentValueResolver;
+use wtfproject\yii\argumentresolver\resolvers\value\DefaultValueResolver;
+use wtfproject\yii\argumentresolver\resolvers\value\RequestAttributeValueResolver;
+use wtfproject\yii\argumentresolver\resolvers\value\RequestValueResolver;
+use wtfproject\yii\argumentresolver\resolvers\value\TypedRequestAttributeValueResolver;
 use Yii;
 use yii\di\Instance;
 
@@ -40,12 +41,13 @@ final class ArgumentResolver implements ArgumentResolverInterface
     public function __construct(array $resolvers = null)
     {
         $this->resolvers = $resolvers ?? [
-                ActiveRecordArgumentValueResolver::class,
-                ComponentArgumentValueResolver::class,
-                ArrayArgumentValueResolver::class,
-                TypedArgumentValueResolver::class,
-                RequestArgumentValueResolver::class,
-                DefaultArgumentValueResolver::class,
+                RequestValueResolver::class,
+                ActiveRecordValueResolver::class,
+                ComponentValueResolver::class,
+                ArrayValueResolver::class,
+                TypedRequestAttributeValueResolver::class,
+                RequestAttributeValueResolver::class,
+                DefaultValueResolver::class,
             ];
     }
 

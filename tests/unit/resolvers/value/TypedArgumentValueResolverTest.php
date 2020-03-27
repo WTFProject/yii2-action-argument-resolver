@@ -6,14 +6,14 @@ namespace wtfproject\yii\argumentresolver\tests\unit\resolvers\value;
 
 use ReflectionParameter;
 use wtfproject\yii\argumentresolver\exceptions\InvalidArgumentValueReceivedData;
-use wtfproject\yii\argumentresolver\resolvers\value\TypedArgumentValueResolver;
+use wtfproject\yii\argumentresolver\resolvers\value\TypedRequestAttributeValueResolver;
 use wtfproject\yii\argumentresolver\tests\unit\TestCase;
 
 /**
  * Class TypedArgumentValueResolverTest
  * @package wtfproject\yii\argumentresolver\tests\unit\resolvers\value
  *
- * @see \wtfproject\yii\argumentresolver\resolvers\value\TypedArgumentValueResolver
+ * @see \wtfproject\yii\argumentresolver\resolvers\value\TypedRequestAttributeValueResolver
  */
 class TypedArgumentValueResolverTest extends TestCase
 {
@@ -24,7 +24,7 @@ class TypedArgumentValueResolverTest extends TestCase
      */
     public function testSupports()
     {
-        $resolver = new TypedArgumentValueResolver();
+        $resolver = new TypedRequestAttributeValueResolver();
         $parameterInt = new ReflectionParameter(function (int $param) {
         }, 'param');
         $parameterFloat = new ReflectionParameter(function (float $param) {
@@ -44,7 +44,7 @@ class TypedArgumentValueResolverTest extends TestCase
      */
     public function testDoesNotSupports()
     {
-        $resolver = new TypedArgumentValueResolver();
+        $resolver = new TypedRequestAttributeValueResolver();
         $parameterVariadicInt = new ReflectionParameter(function (int ...$param) {
         }, 'param');
         $parameterNotTyped = new ReflectionParameter(function ($param) {
@@ -68,7 +68,7 @@ class TypedArgumentValueResolverTest extends TestCase
      */
     public function testSuccessConvert()
     {
-        $resolver = new TypedArgumentValueResolver();
+        $resolver = new TypedRequestAttributeValueResolver();
         $parameterInt = new ReflectionParameter(function (int $paramInt) {
         }, 'paramInt');
         $parameterIntNull = new ReflectionParameter(function (int $paramIntNull = null) {
@@ -93,7 +93,7 @@ class TypedArgumentValueResolverTest extends TestCase
      */
     public function testInvalidDataConvert()
     {
-        $resolver = new TypedArgumentValueResolver();
+        $resolver = new TypedRequestAttributeValueResolver();
         $parameterInt = new ReflectionParameter(function (int $param) {
         }, 'param');
         $parameterInvalidFloat = new ReflectionParameter(function (float $paramFloat) {

@@ -6,12 +6,14 @@ namespace wtfproject\yii\argumentresolver\resolvers\value;
 
 use ReflectionParameter;
 use wtfproject\yii\argumentresolver\config\ArgumentValueResolverConfigurationInterface as Configuration;
+use Yii;
+use yii\web\Request;
 
 /**
- * Class DefaultArgumentValueResolver
+ * Class RequestValueResolver
  * @package wtfproject\yii\argumentresolver\resolvers\value
  */
-class DefaultArgumentValueResolver implements ArgumentValueResolverInterface
+class RequestValueResolver implements ArgumentValueResolverInterface
 {
     /**
      * {@inheritDoc}
@@ -19,17 +21,18 @@ class DefaultArgumentValueResolver implements ArgumentValueResolverInterface
     public function supports(
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
     ): bool {
-        return false === \array_key_exists($parameter->getName(), $requestParams)
-            && $parameter->isDefaultValueAvailable();
+        return null !== ($reflectionClass = $parameter->getClass())
+            && (
+                $reflectionClass->getName() === Request::class || \is_subclass_of($reflectionClass->getName(), Request::class)
+            )
+            && (null !== Yii::$app->getRequest() || $parameter->allowsNull());
     }
 
     /**
      * {@inheritDoc}
-     *
-     * @throws \ReflectionException
      */
     public function resolve(ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null)
     {
-        return $parameter->getDefaultValue();
+        return Yii::$app->getRequest();
     }
 }

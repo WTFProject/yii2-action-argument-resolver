@@ -8,10 +8,10 @@ use ReflectionParameter;
 use wtfproject\yii\argumentresolver\config\ArgumentValueResolverConfigurationInterface as Configuration;
 
 /**
- * Class ArrayArgumentValueResolver
+ * Class DefaultValueResolver
  * @package wtfproject\yii\argumentresolver\resolvers\value
  */
-class ArrayArgumentValueResolver implements ArgumentValueResolverInterface
+class DefaultValueResolver implements ArgumentValueResolverInterface
 {
     /**
      * {@inheritDoc}
@@ -19,15 +19,17 @@ class ArrayArgumentValueResolver implements ArgumentValueResolverInterface
     public function supports(
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
     ): bool {
-        return \array_key_exists($parameter->getName(), $requestParams) && $parameter->isArray();
+        return false === \array_key_exists($parameter->getName(), $requestParams)
+            && $parameter->isDefaultValueAvailable();
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @throws \ReflectionException
      */
-    public function resolve(
-        ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
-    ): array {
-        return (array)$requestParams[$parameter->getName()];
+    public function resolve(ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null)
+    {
+        return $parameter->getDefaultValue();
     }
 }

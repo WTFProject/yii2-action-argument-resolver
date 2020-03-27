@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace wtfproject\yii\argumentresolver\tests\unit\resolvers\value;
 
 use ReflectionParameter;
-use wtfproject\yii\argumentresolver\resolvers\value\ArrayArgumentValueResolver;
+use wtfproject\yii\argumentresolver\resolvers\value\ArrayValueResolver;
 use wtfproject\yii\argumentresolver\tests\unit\TestCase;
 
 /**
  * Class ArrayArgumentValueResolverTest
  * @package wtfproject\yii\argumentresolver\tests\unit\resolvers\value
  *
- * @see \wtfproject\yii\argumentresolver\resolvers\value\ArrayArgumentValueResolver
+ * @see \wtfproject\yii\argumentresolver\resolvers\value\ArrayValueResolver
  */
 class ArrayArgumentValueResolverTest extends TestCase
 {
@@ -23,7 +23,7 @@ class ArrayArgumentValueResolverTest extends TestCase
      */
     public function testSupportsParameter()
     {
-        $resolver = new ArrayArgumentValueResolver();
+        $resolver = new ArrayValueResolver();
         $parameter = new ReflectionParameter(function (array $param) {
         }, 'param');
         $requestParameters = [
@@ -40,7 +40,7 @@ class ArrayArgumentValueResolverTest extends TestCase
      */
     public function testDoesNotSupportsParameter()
     {
-        $resolver = new ArrayArgumentValueResolver();
+        $resolver = new ArrayValueResolver();
         $parameterVariadic = new ReflectionParameter(function (array ...$param) {
         }, 'param');
         $parameterScalar = new ReflectionParameter(function ($param) {
