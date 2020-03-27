@@ -9,12 +9,12 @@ use wtfproject\yii\argumentresolver\resolvers\value\RequestAttributeValueResolve
 use wtfproject\yii\argumentresolver\tests\unit\TestCase;
 
 /**
- * Class RequestArgumentValueResolverTest
+ * Class RequestAttributeValueResolverTest
  * @package wtfproject\yii\argumentresolver\tests\unit\converters\scalar
  *
  * @see \wtfproject\yii\argumentresolver\resolvers\value\RequestAttributeValueResolver
  */
-class RequestArgumentValueResolverTest extends TestCase
+class RequestAttributeValueResolverTest extends TestCase
 {
     /**
      * @return void

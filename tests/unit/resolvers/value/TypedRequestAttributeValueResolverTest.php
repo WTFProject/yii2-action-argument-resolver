@@ -10,12 +10,12 @@ use wtfproject\yii\argumentresolver\resolvers\value\TypedRequestAttributeValueRe
 use wtfproject\yii\argumentresolver\tests\unit\TestCase;
 
 /**
- * Class TypedArgumentValueResolverTest
+ * Class TypedRequestAttributeValueResolverTest
  * @package wtfproject\yii\argumentresolver\tests\unit\resolvers\value
  *
  * @see \wtfproject\yii\argumentresolver\resolvers\value\TypedRequestAttributeValueResolver
  */
-class TypedArgumentValueResolverTest extends TestCase
+class TypedRequestAttributeValueResolverTest extends TestCase
 {
     /**
      * @return void

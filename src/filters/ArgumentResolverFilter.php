@@ -5,16 +5,10 @@ declare(strict_types=1);
 namespace wtfproject\yii\argumentresolver\filters;
 
 use Closure;
-use ReflectionMethod;
-use wtfproject\yii\argumentresolver\exceptions\ArgumentsMissingException;
-use wtfproject\yii\argumentresolver\exceptions\InvalidArgumentValueReceivedData;
+use wtfproject\yii\argumentresolver\HandlesActionParamsBinding;
 use wtfproject\yii\argumentresolver\proxy\factory\ControllerProxyFactory;
 use wtfproject\yii\argumentresolver\resolvers\ArgumentResolverInterface;
-use Yii;
-use yii\base\Action;
 use yii\base\ActionFilter;
-use yii\base\InlineAction;
-use yii\web\BadRequestHttpException;
 
 /**
  * Class ArgumentResolverFilter
@@ -22,6 +16,10 @@ use yii\web\BadRequestHttpException;
  */
 class ArgumentResolverFilter extends ActionFilter
 {
+    use HandlesActionParamsBinding {
+        bindActionParams as private;
+    }
+
     /**
      * @var array
      */
@@ -73,7 +71,7 @@ class ArgumentResolverFilter extends ActionFilter
             $action->controller,
             [
                 'bindActionParams' => $this->bindActionParamsPreInterceptor(
-                    Closure::fromCallable([$this, 'bindActionParameters'])
+                    Closure::fromCallable([$this, 'bindActionParams'])
                 )
             ]
         );
@@ -98,6 +96,22 @@ class ArgumentResolverFilter extends ActionFilter
     }
 
     /**
+     * {@inheritDoc}
+     */
+    protected function getArgumentResolver(): ArgumentResolverInterface
+    {
+        return $this->argumentResolver;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getResolverConfiguration(): array
+    {
+        return $this->configuration;
+    }
+
+    /**
      * @param \Closure $replaceMethod
      *
      * @return \Closure
@@ -110,41 +124,5 @@ class ArgumentResolverFilter extends ActionFilter
 
             return $replaceMethod->call($this, ...\array_values($params));
         };
-    }
-
-    /**
-     * @param \yii\base\Action $action
-     * @param array $params
-     *
-     * @return array
-     *
-     * @throws \ReflectionException
-     * @throws \yii\web\BadRequestHttpException
-     */
-    private function bindActionParameters(Action $action, array $params)
-    {
-        if ($action instanceof InlineAction) {
-            $method = new ReflectionMethod($action->controller, $action->actionMethod);
-        } else {
-            $method = new ReflectionMethod($action, 'run');
-        }
-
-        $configuration = $this->configuration[$action->id] ?? [];
-
-        try {
-            $arguments = $this->argumentResolver->resolve($method, $params, $configuration);
-        } catch (InvalidArgumentValueReceivedData $exception) {
-            throw new BadRequestHttpException(Yii::t('yii', 'Invalid data received for parameter "{param}".', [
-                'param' => $exception->getParameter(),
-            ]), 0, $exception);
-        } catch (ArgumentsMissingException $exception) {
-            throw new BadRequestHttpException(Yii::t('yii', 'Missing required parameters: {params}', [
-                'params' => \implode(', ', $exception->getMissing()),
-            ]));
-        }
-
-        $action->controller->actionParams = $arguments;
-
-        return \array_values($arguments);
     }
 }

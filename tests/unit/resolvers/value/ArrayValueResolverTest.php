@@ -9,12 +9,12 @@ use wtfproject\yii\argumentresolver\resolvers\value\ArrayValueResolver;
 use wtfproject\yii\argumentresolver\tests\unit\TestCase;
 
 /**
- * Class ArrayArgumentValueResolverTest
+ * Class ArrayValueResolverTest
  * @package wtfproject\yii\argumentresolver\tests\unit\resolvers\value
  *
  * @see \wtfproject\yii\argumentresolver\resolvers\value\ArrayValueResolver
  */
-class ArrayArgumentValueResolverTest extends TestCase
+class ArrayValueResolverTest extends TestCase
 {
     /**
      * @return void
