@@ -19,8 +19,7 @@ class RequestAttributeValueResolver implements ArgumentValueResolverInterface
     public function supports(
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
     ): bool {
-        return \array_key_exists($parameter->getName(), $requestParams)
-            && false === \is_array($requestParams[$parameter->getName()]);
+        return \array_key_exists($parameter->getName(), $requestParams);
     }
 
     /**

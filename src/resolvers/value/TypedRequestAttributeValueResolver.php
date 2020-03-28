@@ -24,6 +24,8 @@ class TypedRequestAttributeValueResolver implements ArgumentValueResolverInterfa
         return \array_key_exists($parameter->getName(), $requestParams)
             && null !== ($type = $parameter->getType())
             && $type->isBuiltin()
+            // if parameter null and type not allows null
+            // resolver will throw an error about invalid received data
             && (null !== $requestParams[$parameter->getName()] || false === $type->allowsNull());
     }
 
@@ -42,8 +44,12 @@ class TypedRequestAttributeValueResolver implements ArgumentValueResolverInterfa
             $value = \filter_var($requestParams[$parameter->getName()], \FILTER_VALIDATE_FLOAT, \FILTER_NULL_ON_FAILURE);
         } else if ('int' === $typeName) {
             $value = \filter_var($requestParams[$parameter->getName()], \FILTER_VALIDATE_INT, \FILTER_NULL_ON_FAILURE);
-        } else {
+        } else if ('array' === $typeName) {
+            $value = (array)$requestParams[$parameter->getName()];
+        } else if ('string' === $typeName && false === \is_array($requestParams[$parameter->getName()])) {
             $value = $requestParams[$parameter->getName()];
+        } else {
+            $value = null;
         }
 
         if (null === $value) {

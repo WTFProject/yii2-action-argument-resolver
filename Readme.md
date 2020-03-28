@@ -9,8 +9,7 @@
 
 4. add test tool and tests
 5. write documentation 
-
-6. describe the way, how directory for proxies must be created
+ 5.1 describe the way, how directory for proxies must be created
 
 later
 1. console arguments resovler
