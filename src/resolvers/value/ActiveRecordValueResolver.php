@@ -24,7 +24,7 @@ class ActiveRecordValueResolver implements ArgumentValueResolverInterface
     public function supports(
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
     ): bool {
-        return $configuration instanceof ActiveRecordConfiguration
+        return (null === $configuration || $configuration instanceof ActiveRecordConfiguration)
             && null !== ($reflectionClass = $parameter->getClass())
             && \is_subclass_of($reflectionClass->getName(), ActiveRecordInterface::class);
     }
@@ -43,6 +43,8 @@ class ActiveRecordValueResolver implements ArgumentValueResolverInterface
     public function resolve(
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
     ) {
+        $configuration = $configuration ?? new ActiveRecordConfiguration();
+
         $attribute = $this->resolveAttribute($configuration, $parameter->getClass()->getName());
 
         if (false === \array_key_exists($attribute, $requestParams)) {
@@ -67,9 +69,11 @@ class ActiveRecordValueResolver implements ArgumentValueResolverInterface
             $this->handleNotFoundError($configuration);
         }
 
-        if (null !== $model && false === $parameter->getClass()->isInstance($model)) {
+        if (null !== $model && (false === \is_object($model) || false === $parameter->getClass()->isInstance($model))) {
             throw new InvalidConfigException(\sprintf(
-                'Invalid data type: "%s". "%s" is expected.', \gettype($model), $parameter->getClass()->getName()
+                'Invalid data type: "%s". "%s" is expected.',
+                \is_object($model) ? \get_class($model) : \gettype($model),
+                $parameter->getClass()->getName()
             ));
         }
 

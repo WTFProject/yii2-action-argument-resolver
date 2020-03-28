@@ -6,6 +6,8 @@
 3.2 active record resolver(find callback, find argument, error handler callback) (+)
 3.3 module component resolver(?moduleName, component name) (+)
 3.4 container resolver(????)
+3.5 typed request attribute resolver - add boolean support and tests for this case (+)
+3.6 ar resolver - add type check (+)
 
 4. add test tool and tests
 5. write documentation 

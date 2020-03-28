@@ -44,6 +44,8 @@ class TypedRequestAttributeValueResolver implements ArgumentValueResolverInterfa
             $value = \filter_var($requestParams[$parameter->getName()], \FILTER_VALIDATE_FLOAT, \FILTER_NULL_ON_FAILURE);
         } else if ('int' === $typeName) {
             $value = \filter_var($requestParams[$parameter->getName()], \FILTER_VALIDATE_INT, \FILTER_NULL_ON_FAILURE);
+        } else if ('bool' === $typeName) {
+            $value = \filter_var($requestParams[$parameter->getName()], \FILTER_VALIDATE_BOOLEAN, \FILTER_NULL_ON_FAILURE);
         } else if ('array' === $typeName) {
             $value = (array)$requestParams[$parameter->getName()];
         } else if ('string' === $typeName && false === \is_array($requestParams[$parameter->getName()])) {

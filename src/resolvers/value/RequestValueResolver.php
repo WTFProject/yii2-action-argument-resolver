@@ -17,6 +17,8 @@ class RequestValueResolver implements ArgumentValueResolverInterface
 {
     /**
      * {@inheritDoc}
+     *
+     * @throws \yii\base\InvalidConfigException
      */
     public function supports(
         ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null
@@ -25,14 +27,16 @@ class RequestValueResolver implements ArgumentValueResolverInterface
             && (
                 $reflectionClass->getName() === Request::class || \is_subclass_of($reflectionClass->getName(), Request::class)
             )
-            && (null !== Yii::$app->getRequest() || $parameter->allowsNull());
+            && (null !== Yii::$app->get('request', false) || $parameter->allowsNull());
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @throws \yii\base\InvalidConfigException
      */
     public function resolve(ReflectionParameter $parameter, array &$requestParams, Configuration $configuration = null)
     {
-        return Yii::$app->getRequest();
+        return Yii::$app->get('request', false === $parameter->allowsNull());
     }
 }

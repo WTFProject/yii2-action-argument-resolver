@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace wtfproject\yii\argumentresolver\tests\unit\resolvers\value;
 
+use ReflectionFunction;
 use ReflectionParameter;
 use wtfproject\yii\argumentresolver\exceptions\InvalidArgumentValueReceivedData;
 use wtfproject\yii\argumentresolver\resolvers\value\TypedRequestAttributeValueResolver;
 use wtfproject\yii\argumentresolver\tests\unit\TestCase;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class TypedRequestAttributeValueResolverTest
@@ -25,16 +27,27 @@ class TypedRequestAttributeValueResolverTest extends TestCase
     public function testSupports()
     {
         $resolver = new TypedRequestAttributeValueResolver();
-        $parameterInt = new ReflectionParameter(function (int $param) {
-        }, 'param');
-        $parameterFloat = new ReflectionParameter(function (float $param) {
-        }, 'param');
+        $reflectionFunction = new ReflectionFunction(function (
+            int $int, float $float, bool $bool, string $str, array $arr
+        ) {
+        });
         $requestParameters = [
-            'param' => 123,
+            'int' => '123',
+            'float' => '123.23',
+            'bool' => '1',
+            'str' => 'afaas',
+            'arr' => ['123', '3434'],
         ];
 
-        $this->assertTrue($resolver->supports($parameterInt, $requestParameters));
-        $this->assertTrue($resolver->supports($parameterFloat, $requestParameters));
+        $parameters = ArrayHelper::index($reflectionFunction->getParameters(), function (ReflectionParameter $parameter) {
+            return $parameter->getName();
+        });
+
+        $this->assertTrue($resolver->supports($parameters['int'], $requestParameters));
+        $this->assertTrue($resolver->supports($parameters['float'], $requestParameters));
+        $this->assertTrue($resolver->supports($parameters['bool'], $requestParameters));
+        $this->assertTrue($resolver->supports($parameters['str'], $requestParameters));
+        $this->assertTrue($resolver->supports($parameters['arr'], $requestParameters));
     }
 
     /**
@@ -45,20 +58,18 @@ class TypedRequestAttributeValueResolverTest extends TestCase
     public function testDoesNotSupports()
     {
         $resolver = new TypedRequestAttributeValueResolver();
-        $parameterVariadicInt = new ReflectionParameter(function (int ...$param) {
-        }, 'param');
+
         $parameterNotTyped = new ReflectionParameter(function ($param) {
         }, 'param');
-        $parameterArray = new ReflectionParameter(function ($param) {
-        }, 'param');
-        $parameterString = new ReflectionParameter(function (string $param) {
+        $parameterClass = new ReflectionParameter(function (ReflectionParameter $class) {
+        }, 'class');
+        $parameterStringNotExist = new ReflectionParameter(function (string $param) {
         }, 'param');
         $requestParameters = [];
 
-        $this->assertFalse($resolver->supports($parameterVariadicInt, $requestParameters));
         $this->assertFalse($resolver->supports($parameterNotTyped, $requestParameters));
-        $this->assertFalse($resolver->supports($parameterArray, $requestParameters));
-        $this->assertFalse($resolver->supports($parameterString, $requestParameters));
+        $this->assertFalse($resolver->supports($parameterClass, $requestParameters));
+        $this->assertFalse($resolver->supports($parameterStringNotExist, $requestParameters));
     }
 
     /**
@@ -69,21 +80,35 @@ class TypedRequestAttributeValueResolverTest extends TestCase
     public function testSuccessConvert()
     {
         $resolver = new TypedRequestAttributeValueResolver();
-        $parameterInt = new ReflectionParameter(function (int $paramInt) {
-        }, 'paramInt');
-        $parameterIntNull = new ReflectionParameter(function (int $paramIntNull = null) {
-        }, 'paramIntNull');
-        $parameterFloat = new ReflectionParameter(function (float $paramFloat) {
-        }, 'paramFloat');
+        $parameterInt = new ReflectionParameter(function (int $int) {
+        }, 'int');
+        $parameterFloat = new ReflectionParameter(function (float $float) {
+        }, 'float');
+        $parameterBool = new ReflectionParameter(function (bool $bool) {
+        }, 'bool');
+        $parameterString = new ReflectionParameter(function (string $str) {
+        }, 'str');
+        $parameterArr = new ReflectionParameter(function (array $arr) {
+        }, 'arr');
+
         $requestParameters = [
-            'paramInt' => '12312',
-            'paramIntNull' => null,
-            'paramFloat' => '12.033',
+            'int' => '12312',
+            'float' => '12.033',
+            'bool' => '1',
+            'str' => 'some_str',
+            'arr' => ['123123', '345345'],
         ];
 
+
         $this->assertEquals(12312, $resolver->resolve($parameterInt, $requestParameters));
-        $this->assertEquals(null, $resolver->resolve($parameterIntNull, $requestParameters));
         $this->assertEquals(12.033, $resolver->resolve($parameterFloat, $requestParameters));
+        $this->assertEquals(true, $resolver->resolve($parameterBool, $requestParameters));
+        $this->assertEquals('some_str', $resolver->resolve($parameterString, $requestParameters));
+        $this->assertEquals(['123123', '345345'], $resolver->resolve($parameterArr, $requestParameters));
+
+        $requestParameters['arr'] = null;
+
+        $this->assertEquals([], $resolver->resolve($parameterArr, $requestParameters));
     }
 
     /**
@@ -94,21 +119,26 @@ class TypedRequestAttributeValueResolverTest extends TestCase
     public function testInvalidDataConvert()
     {
         $resolver = new TypedRequestAttributeValueResolver();
-        $parameterInt = new ReflectionParameter(function (int $param) {
-        }, 'param');
-        $parameterInvalidFloat = new ReflectionParameter(function (float $paramFloat) {
-        }, 'paramFloat');
+
+        $parameterInt = new ReflectionParameter(function (int $int) {
+        }, 'int');
+        $parameterFloat = new ReflectionParameter(function (float $float) {
+        }, 'float');
+        $parameterString = new ReflectionParameter(function (string $str) {
+        }, 'str');
         $requestParameters = [
-            'param' => null,
-            'paramFloat' => 'ewfwefwef',
+            'int' => null,
+            'float' => 'ewfwefwef',
+            'str' => [],
         ];
 
-        $this->expectExceptionObject(new InvalidArgumentValueReceivedData('param'));
-
+        $this->expectExceptionObject(new InvalidArgumentValueReceivedData('int'));
         $resolver->resolve($parameterInt, $requestParameters);
 
-        $this->expectExceptionObject(new InvalidArgumentValueReceivedData('paramFloat'));
+        $this->expectExceptionObject(new InvalidArgumentValueReceivedData('float'));
+        $resolver->resolve($parameterFloat, $requestParameters);
 
-        $resolver->resolve($parameterInvalidFloat, $requestParameters);
+        $this->expectExceptionObject(new InvalidArgumentValueReceivedData('str'));
+        $resolver->resolve($parameterString, $requestParameters);
     }
 }

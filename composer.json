@@ -26,6 +26,7 @@
         "ocramius/proxy-manager": "^2.0 <2.6"
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "phpunit/phpunit": "^6"
     },
     "extra": {

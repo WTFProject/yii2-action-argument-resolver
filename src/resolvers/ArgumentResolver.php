@@ -12,7 +12,6 @@ use wtfproject\yii\argumentresolver\exceptions\InvalidArgumentValueReceivedData;
 use wtfproject\yii\argumentresolver\exceptions\UnresolvedClassPropertyException;
 use wtfproject\yii\argumentresolver\exceptions\UnsupportedArgumentTypeException;
 use wtfproject\yii\argumentresolver\resolvers\value\ActiveRecordValueResolver;
-use wtfproject\yii\argumentresolver\resolvers\value\ArrayValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\ComponentValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\DefaultValueResolver;
 use wtfproject\yii\argumentresolver\resolvers\value\RequestAttributeValueResolver;
@@ -45,7 +44,6 @@ final class ArgumentResolver implements ArgumentResolverInterface
                 RequestValueResolver::class,
                 ActiveRecordValueResolver::class,
                 ComponentValueResolver::class,
-                ArrayValueResolver::class,
                 TypedRequestAttributeValueResolver::class,
                 RequestAttributeValueResolver::class,
                 DefaultValueResolver::class,

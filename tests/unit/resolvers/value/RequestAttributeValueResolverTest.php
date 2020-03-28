@@ -21,7 +21,7 @@ class RequestAttributeValueResolverTest extends TestCase
      *
      * @throws \ReflectionException
      */
-    public function testSupportsParameter()
+    public function testSupports()
     {
         $resolver = new RequestAttributeValueResolver();
         $parameter = new ReflectionParameter(function ($param) {
@@ -38,21 +38,14 @@ class RequestAttributeValueResolverTest extends TestCase
      *
      * @throws \ReflectionException
      */
-    public function testDoesNotSupportsParameter()
+    public function testDoesNotSupports()
     {
         $resolver = new RequestAttributeValueResolver();
-        $parameter = $parameter = new ReflectionParameter(function ($param) {
+
+        $parameter = new ReflectionParameter(function ($param) {
         }, 'param');
-        $parameterScalar = new ReflectionParameter(function (string $param) {
-        }, 'param');
-        $parameterClass = new ReflectionParameter(function (ReflectionParameter $param) {
-        }, 'param');
-        $requestParameters = [
-            'param' => [1231231],
-        ];
+        $requestParameters = [];
 
         $this->assertFalse($resolver->supports($parameter, $requestParameters));
-        $this->assertFalse($resolver->supports($parameterScalar, $requestParameters));
-        $this->assertFalse($resolver->supports($parameterClass, $requestParameters));
     }
 }
